@@ -8,7 +8,7 @@ const private_key=process.env.PRIVATE_KEY
 
 async function signup(req,res){
     const {username,email,password}=req.body
-
+    const avatar=req.file
    
     const userJoiSchema=joi.object({
         username:joi.string().min(3).max(12).alphanum().required(),
@@ -31,10 +31,12 @@ async function signup(req,res){
     }
     
     const hashedPassword=await bcrypt.hash(password,10);
+    const userAvatar=avatar?avatar:"default.png"
     const createdUser=await users.create({
         username,
         email,
-        password:hashedPassword
+        password:hashedPassword,
+        avatar:userAvatar
     })
 
     console.log(createdUser)
@@ -48,8 +50,6 @@ async function signup(req,res){
 
 async function login(req,res){
     const {email,password}=req.body
-
-    //1.check if the email exits or not 2.compare the pass
 
     const isEmailExists=await users.findOne({email:email})
     if(!isEmailExists){
@@ -69,7 +69,7 @@ async function login(req,res){
 
     const token=jwt.sign(data,private_key)
    console.log("logged in user",isEmailExists)
-   return res.status(200).json({response:token})
+   return res.status(200).json({response:"user logged-in successfully",token:token})
 
 
 }

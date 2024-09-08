@@ -1,11 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import userdefault from "../assets/userdefault.png"
 import Post from '../components/Post'
+import CreatePostPopup from '../components/CreatePostPopup'
 
 function Home() {
     const allPosts = [1, 2, 3, 4, 5, 6, 67, 7, 8, 8]
     const sponsors = [1, 2, 3, 4, 4, 5, 6, 7]
     const hashtags=["#TrainAccident","Javascript","#salman khan","#chota bheem","modi","melodi","india"]
+
+    const [showPopup,setShowPopup]=useState(false);
 
     return (
         <div className='flex flex-wrap justify-center items-center h-screen w-full overflow-hidden  '>
@@ -41,7 +44,7 @@ function Home() {
                         <input type="text" name="search" placeholder='search anything' className='bg-transparent p-1 border rounded-sm w-64 outline-none border-slate-800 h-10' />
                         <button className='bg-sky-300 px-3 py-1 w-54 h-10 rounded-lg ms-2'>Search</button>
                     </div>
-                    <button className='bg-red-300 px-3 py-1 w-54 h-10 rounded-lg'>Create post</button>
+                    <button className='bg-red-300 px-3 py-1 w-54 h-10 rounded-lg' onClick={()=>setShowPopup(true)}>Create post</button>
                 </header>
 
                 <div id='feed' className='mx-20 mt-10  h-full' >
@@ -72,6 +75,9 @@ function Home() {
                     </div>
                 </div>
             </div>
+
+            {/* //popup here  */}
+            {showPopup && <CreatePostPopup showPopup={showPopup} setShowPopup={setShowPopup}/>}
         </div>
     )
 }

@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { postContext } from '../contexts/PostContextProvider';
 import { userContext } from '../contexts/UserContextProvider';
 
-function CreatePostPopup({showPopup,setShowPopup}) {
+function CreatePostPopup({showPopup,setShowPopup,refreshFeed}) {
 
     const [postText,setPostText]=useState("")
     const [postImg,setPostImg]=useState("")
@@ -29,7 +29,7 @@ function CreatePostPopup({showPopup,setShowPopup}) {
             setPostMessage("write something first")
         }
         else{
-            uploadUserPost(postData)
+            uploadUserPost(postData,refreshFeed)
             setShowPopup(false)
         }
 
@@ -49,7 +49,7 @@ function CreatePostPopup({showPopup,setShowPopup}) {
         <div className='bg-neutral-300 p-5  w-[500px] rounded-lg '>
             <header className='flex justify-between items-center mb-4'>
                 <h1 className='font-bold'>Create a twizzy</h1>
-                <h1 onClick={()=>setShowPopup(false)} className='font-bold'>X</h1>
+                <h1 onClick={()=>setShowPopup(false)} className='font-bold cursor-pointer text-red-300'>X</h1>
             </header>
 
             <div>

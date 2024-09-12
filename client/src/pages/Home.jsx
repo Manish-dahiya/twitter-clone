@@ -1,38 +1,75 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import userdefault from "../assets/userdefault.png"
 import Post from '../components/Post'
 import CreatePostPopup from '../components/CreatePostPopup'
+import { Link } from 'react-router-dom'
+import { decodeToken } from '../helpers/helper'
+import { postContext } from '../contexts/PostContextProvider'
+import { userContext } from '../contexts/UserContextProvider'
 
 function Home() {
-    const allPosts = [1, 2, 3, 4, 5, 6, 67, 7, 8, 8]
     const sponsors = [1, 2, 3, 4, 4, 5, 6, 7]
     const hashtags=["#TrainAccident","Javascript","#salman khan","#chota bheem","modi","melodi","india"]
 
     const [showPopup,setShowPopup]=useState(false);
+    const token=localStorage.getItem("token")
+    const [userId,setUserId]=useState(decodeToken(token))//it will return you the id
+    const { getUserProfile, userProfileData } = useContext(userContext);
+
+    const {feed,getfeed}=useContext(postContext)
+    const [allposts,setallPosts]=useState([])
+    useEffect(()=>{
+        setUserId(decodeToken(localStorage.getItem("token")))
+    },[localStorage.getItem("token")])
+
+    useEffect(()=>{
+        getfeed()  
+        getUserProfile(userId)
+    },[])
+
+  
+
+    useEffect(()=>{
+        setallPosts(feed);
+    },[feed])
+
+    const refreshFeed=()=>{
+        getfeed();
+    }
+
+
 
     return (
         <div className='flex flex-wrap justify-center items-center h-screen w-full overflow-hidden  '>
             <div id='first' className='border bg-[#D2E0FB] w-[20%] h-full py-2'>
 
                 <div id='profile ' className='flex flex-col justify-center items-center'>
-                    <img src={userdefault} alt="" className='h-20 w-20 rounded-full' />
-                    <h1 className='my-2'>username</h1>
+                     { userProfileData.length>0?  <img    
+                                    src={userProfileData[0].avatar
+                                        ? `http://localhost:5000/avatar/${userProfileData[0].avatar}`
+                                        : userdefault}
+                                    alt="User Avatar"
+                                    className='h-20 w-20 rounded-full'
+                                />
+                                :<img src={userdefault} alt="" className='h-20 w-20 rounded-full' />
+                    }
+                    <h1 className='my-2'>{userProfileData.length>0 ? userProfileData[0].username:"username"}</h1>
                     <div className='flex gap-5 justify-center items-center'>
-                        <div className='text-center'> <h1>1000</h1><span>posts</span></div>
-                        <div className='text-center'> <h1>1000</h1><span>followers</span></div>
-                        <div className='text-center'> <h1>1000</h1><span>following</span></div>
+                        <div className='text-center'> <h1>{userProfileData.length>0 ? userProfileData[0].posts.length:"0"}</h1><span>posts</span></div>
+                        <div className='text-center'> <h1>{userProfileData.length>0 ? userProfileData[0].followers.length:"0"}</h1><span>followers</span></div>
+                        <div className='text-center'> <h1>{userProfileData.length>0 ? userProfileData[0].following.length:"0"}</h1><span>following</span></div>
                     </div>
                 </div>
                 <hr className='text-slate-600 mt-10' />
                 <div id='tabs ' className='flex flex-col  items-center my-10'>
-                    <div className=' h-14 p-4 w-full hover:bg-slate-500'>Home</div>
-                    <div className=' h-14 p-4 w-full  hover:bg-slate-500'>Trending</div>
-                    <div className=' h-14 p-4 w-full  hover:bg-slate-500'>Message</div>
-                    <div className=' h-14 p-4 w-full  hover:bg-slate-500'>Profile</div>
+                    <div className=' h-14 p-4 w-full hover:bg-[#bac7e1c8]'>Home</div>
+                    <div className=' h-14 p-4 w-full  hover:bg-[#bac7e1c8]'>Trending</div>
+                    <div className=' h-14 p-4 w-full  hover:bg-[#bac7e1c8]'>Message</div>
+                    <Link to={`/profile/${userId}`} className=' h-14 p-4 w-full  hover:bg-[#bac7e1c8]'>Profile</Link>
 
                 </div>
                 <div id='logout'>
-                    <div className=' h-14 p-4 w-full hover:bg-slate-500'>Logout</div>
+                    <div className=' h-14 p-4 w-full hover:bg-[#bac7e1c8]'>Logout</div>
                 </div>
 
 
@@ -49,8 +86,11 @@ function Home() {
 
                 <div id='feed' className='mx-20 mt-10  h-full' >
                     {/* //posts will come here  */}
-                    {allPosts.map((item, index) => (
-                        <Post />
+                    {allposts.length>0 && allposts.map((item, index) => (
+                        <>
+                        <Post post={item} refreshFeed={refreshFeed}/>
+                        <br />
+                        </>
                     ))}
                 </div>
 
@@ -77,7 +117,7 @@ function Home() {
             </div>
 
             {/* //popup here  */}
-            {showPopup && <CreatePostPopup showPopup={showPopup} setShowPopup={setShowPopup}/>}
+            {showPopup && <CreatePostPopup showPopup={showPopup} setShowPopup={setShowPopup} refreshFeed={refreshFeed} />}
         </div>
     )
 }

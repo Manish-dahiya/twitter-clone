@@ -31,7 +31,7 @@ async function signup(req,res){
     }
     
     const hashedPassword=await bcrypt.hash(password,10);
-    const userAvatar=avatar?avatar:"default.png"
+    const userAvatar=avatar?avatar:null
     const createdUser=await users.create({
         username,
         email,
@@ -74,8 +74,91 @@ async function login(req,res){
 
 }
 
+async function getUserProfile(req,res){
+    const {userId}=req.params
+
+    try {
+        const profileData=await users.find({_id:userId}).populate("posts")
+        if(profileData){
+            return res.status(200).json({response:profileData})
+        }
+        else{
+            return res.status(400).json({response:"unable to fetch the profile try logging again"})
+        }
+    } catch (error) {
+        console.log(error)
+    }
+
+
+}
+
+async function updateUserProfile(req,res){
+    const {id,username}=req.body;
+    const avatar=req.file;
+
+   try {
+    const updateUser=await users.updateOne({_id:id},{username:username})
+
+    if(avatar){
+        const updateavatar=await users.updateOne({_id:id},{avatar:avatar.filename})
+    }
+    return res.status(200).json({response:"profile updated successfully"})
+    
+   } catch (error) {
+    return res.status(400).json({response:"error in updating profile"})
+   }
+}
+
+
+async function handleFollowUnfollow(req,res){
+    const {userId,followerId,follow}=req.body;
+
+    if(follow){
+       try {
+        const a= await users.findByIdAndUpdate({_id:userId},{$push:{followers:followerId}})
+        const b= await users.findByIdAndUpdate({_id:followerId},{$push:{following:userId}})
+        return res.status(200)
+       } catch (error) {
+        return res.status(400)
+       }
+    }
+    else{
+       try {
+        const a =await users.findByIdAndUpdate({_id:userId},{$pull:{followers:followerId}})
+        const b= await users.findByIdAndUpdate({_id:followerId},{$pull:{following:userId}})
+        return res.status(200)
+       } catch (error) {
+        res.status(400)
+       }
+
+    }
+}
+async function getFollowers(req,res){
+    const {userId}=req.params
+    try {
+        const data=await users.find({_id:userId}).populate("followers")
+        return res.status(200).json({response:data[0].followers})
+    } catch (error) {
+        console.log(error)
+    }
+}
+async function getFolowing (req,res){
+    const {userId}=req.params
+    try {
+        const data=await users.find({_id:userId}).populate("following")
+        return res.status(200).json({response:data[0].following})
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 
 module.exports={
    signup,
-   login
+   login,
+   getUserProfile,
+   updateUserProfile,
+   handleFollowUnfollow,
+   getFollowers,
+   getFolowing
 }

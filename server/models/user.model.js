@@ -34,6 +34,13 @@ const userSchema=mongoose.Schema({
             ref:"posts",
             default:null
         }
+    ],
+    likes:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"posts",
+            default:null
+        }
     ]
 })
 

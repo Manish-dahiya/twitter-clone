@@ -2,7 +2,7 @@ const express=require("express")
 const router=express.Router()
 const multer=require("multer")
 const path=require("path")
-const {signup,login,getUserProfile,updateUserProfile,handleFollowUnfollow,getFollowers,getFolowing}=require("../controllers/user.controller")
+const {signup,login,getUserProfile,updateUserProfile,handleFollowUnfollow,getFollowers,getFolowing,getAllUsers}=require("../controllers/user.controller")
 
 const filepath= path.join(__dirname,"../public/avatar")
 const storage=multer.diskStorage({
@@ -21,6 +21,7 @@ router.post("/signup",upload.single("avatar"),signup)
 router.get("/getUserProfile/:userId",getUserProfile)
 router.post("/editProfile",upload.single("avatar"),updateUserProfile)
 router.post("/followUnfollow",handleFollowUnfollow)
+router.get("/getAllUsers",getAllUsers)
 router.get("/getfollowers/:userId",getFollowers)
 router.get("/getfollowing/:userId",getFolowing)
 

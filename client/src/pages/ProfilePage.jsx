@@ -72,6 +72,8 @@ function ProfilePage() {
         }
     }
 
+  
+
     return (
         <div className='h-screen w-full p-3 flex justify-center items-center'>
             
@@ -87,7 +89,7 @@ function ProfilePage() {
                                         ? `http://localhost:5000/avatar/${userProfileData[0].avatar}`
                                         : deafaultUser}
                                     alt="User Avatar"
-                                    className='h-20 w-20 rounded-full'
+                                    className='h-20 w-20 rounded-full object-cover object-center'
                                 />
                                 <h1>{userProfileData[0].username}</h1>
                                 <div id='followersDiv' className='h-16 w-64 mt-2 rounded-lg border flex gap-3 justify-center items-center p-2'>
@@ -150,8 +152,8 @@ function ProfilePage() {
                             <div id='followers' className='flex flex-col gap-2 items-center justify-center overflow-y-scroll'>
                                 {
                                     followers?.length>0? followers?.map((item,index)=>{
-                                        return <Link to={`/profile/${item._id}`} key={index} className='w-96 border h-[49px] flex justify-between items-center rounded-lg p-2 bg-slate-300'>
-                                            {item.username}
+                                        return <Link to={`/profile/${item._id}`} key={index} className='w-96 border h-[49px] flex justify-between items-center rounded-lg p-2 bg-slate-300 hover:text-blue-500'>
+                                            @{item.username}
                                         </Link>
                                     })
                                     :<div className='mt-10'>No followers</div>
@@ -162,8 +164,8 @@ function ProfilePage() {
                                 : <div className='flex flex-col items-center justify-center overflow-y-scroll'>
                                  {
                                     following?.length>0 ? following?.map((item,index)=>{
-                                        return <Link to={`/profile/${item._id}`} key={index} className=''>
-                                            {item.username}
+                                        return <Link to={`/profile/${item._id}`} key={index} className='w-96 border h-[49px] flex justify-between items-center rounded-lg p-2 bg-slate-300 hover:text-blue-500'>
+                                            @{item.username}
                                         </Link>
                                     })
                                     :<div className='mt-10'> No following</div>

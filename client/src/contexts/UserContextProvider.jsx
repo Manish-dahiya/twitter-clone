@@ -14,6 +14,7 @@ function UserContextProvider({ children }) {
     const [responseMessage, setResponseMessage] = useState("")
     const [userId, setUserId] = useState(null)
     const [userProfileData, setUserProfileData] = useState([])
+    const [allUsers,setAllUsers]=useState(null)
 
     const loginUser = async (formData) => {
         try {
@@ -124,6 +125,19 @@ function UserContextProvider({ children }) {
         }
     }
 
+    const getAllUsers=async()=>{
+        try {
+            const response=await fetch("http://localhost:5000/twizzy/users/getAllUsers")
+            if(response.status==200){
+                const data=await response.json()
+                setAllUsers(data.response)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     useEffect(() => {
         const token = localStorage.getItem("token")
@@ -144,7 +158,9 @@ function UserContextProvider({ children }) {
             getUserProfile,
             userProfileData,
             editUserProfile,
-            followUnfollow
+            followUnfollow,
+            getAllUsers,
+            allUsers
         }}>
             {children}
         </userContext.Provider>

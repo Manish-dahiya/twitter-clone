@@ -26,8 +26,11 @@ function Post({ post, location, refreshFeed }) {
 
     const handleLike = () => {
         likePost(post?._id, userId, true)
+        .then(()=>{
 
-        refreshFeed()
+            refreshFeed()
+        })
+
         setIsLiked(true)
     }
     const handleUnlike = () => {
@@ -48,13 +51,20 @@ function Post({ post, location, refreshFeed }) {
 
     return (
         <>
-            <div className={`bg-white w-[100%]] rounded p-3 border  `}>{/* h-[65%] */}
+            <div className={`bg-white w-[100%] rounded p-3 border  `}>{/* h-[65%] */}
                 <header className='flex  justify-between gap-2 relative'>
-                    <div>
-                        <img src={userdefault} alt="" className='h-10 w-10 rounded-full border border-slate-400' />
-                        <Link to={`/profile/${post?.user?._id}`} className='hover:text-blue-500'>{post?.user?.username}</Link>
+                    {location=="home" &&  <div>
+                    { post? <img    
+                                    src={post.user?.avatar
+                                        ? `http://localhost:5000/avatar/${post.user?.avatar}`
+                                        : userdefault}
+                                    alt="User Avatar"
+                                    className='h-10 w-10 rounded-full border border-slate-400 object-cover object-center'
+                                />
+                                :<img src={userdefault} alt="" className='h-20 w-20 rounded-full' />
+                    }                        <Link to={`/profile/${post?.user?._id}`} className='hover:text-blue-500'>{post?.user?.username}</Link>
                     </div>
-
+}
                     {post?.user?._id==userId && <FontAwesomeIcon icon={faEllipsis} className='cursor-pointer ' onClick={() => setShowDelete(!showDelete)} />}
                     <div className='absolute right-0 top-4 bg-cyan-300 rounded-lg'>
                         {showDelete && <button className='px-2 py-1 rounded-lg' onClick={() => handleDeletePost(post?._id)}>delete</button>}
@@ -64,7 +74,7 @@ function Post({ post, location, refreshFeed }) {
                 <hr className='text-slate-400 mt-2' />
                 <div id='post-content' className='flex flex-col  justify-center items-center'>
                     {/* //image if any */}
-                    {post?.image && <img src={post?.image ? `http://localhost:5000/post/${post.image}` : postimg} alt="" className='w-[100%] h-[300px] border' />}
+                    {post?.image && <img src={post?.image ? `http://localhost:5000/post/${post.image}` : postimg} alt="" className='rounded-lg border-slate-900 w-[100%] h-[300px] border object-cover object-center' />}
                     <p id='post-content'> {post?.text.slice(0, 500)}</p>
                 </div>
                 <hr className='text-slate-400 mt-2' />

@@ -7,7 +7,7 @@ import { userContext } from '../contexts/UserContextProvider';
 function CreatePostPopup({showPopup,setShowPopup,refreshFeed}) {
 
     const [postText,setPostText]=useState("")
-    const [postImg,setPostImg]=useState("")
+    const [postImg,setPostImg]=useState(null)
     const ref=useRef(null)
     const {uploadUserPost,postMessage,setPostMessage}=useContext(postContext)
     const {userId}=useContext(userContext)
@@ -25,8 +25,14 @@ function CreatePostPopup({showPopup,setShowPopup,refreshFeed}) {
         postData.append("text",postText)
         postData.append("image",postImg);
 
-        if(!userId || postText.length==0 ){
+        if(!userId || postText.length==0  ){
             setPostMessage("write something first")
+        }
+        else if(!postImg){
+            setPostMessage("please upload an image")
+        }
+        else if(postText.length >500){
+            setPostMessage("character limit reached (only 500 is allowed)")
         }
         else{
             uploadUserPost(postData,refreshFeed)
@@ -62,10 +68,11 @@ function CreatePostPopup({showPopup,setShowPopup,refreshFeed}) {
                 <button className='bg-blue-400 h-10 px-3  rounded-lg ' onClick={handleUploadPost}>Post</button>
                 <button className='bg-red-300 h-10 px-3  rounded-lg ' onClick={()=>setShowPopup(false)}>cancel</button>
             </footer>
-            <div>{postMessage}</div>
+            <div className='text-red-400'>{postMessage}</div>
         </div>
     </div>
   )
 }
 
 export default CreatePostPopup
+

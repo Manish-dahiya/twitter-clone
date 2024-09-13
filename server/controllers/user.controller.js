@@ -152,6 +152,14 @@ async function getFolowing (req,res){
     }
 }
 
+async function getAllUsers(req,res){
+    try {
+        const allUsers=await users.find()
+        return res.status(200).json({response:allUsers})
+    } catch (error) {
+        return res.status(400).json({response:"error in fetching users"})
+    }
+}
 
 module.exports={
    signup,
@@ -160,5 +168,6 @@ module.exports={
    updateUserProfile,
    handleFollowUnfollow,
    getFollowers,
-   getFolowing
+   getFolowing,
+   getAllUsers
 }

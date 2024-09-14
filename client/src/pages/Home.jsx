@@ -6,15 +6,16 @@ import { Link } from 'react-router-dom'
 import { decodeToken } from '../helpers/helper'
 import { postContext } from '../contexts/PostContextProvider'
 import { userContext } from '../contexts/UserContextProvider'
+import LeftSidebar from "../components/LeftSidebar"
 
 function Home() {
-    const sponsors = [1, 2, 3, 4, 4, 5, 6, 7]
     const hashtags=["#TrainAccident","Javascript","#salman khan","#chota bheem","modi","melodi","india"]
 
     const [showPopup,setShowPopup]=useState(false);
     const token=localStorage.getItem("token")
     const [userId,setUserId]=useState(decodeToken(token))//it will return you the id
     const { getUserProfile, userProfileData,getAllUsers,allUsers } = useContext(userContext);
+    const [showLeftSidebar,setShowLeftSidebar]=useState(false)
     
     const {feed,getfeed}=useContext(postContext)
     const [allposts,setallPosts]=useState([])
@@ -34,7 +35,7 @@ function Home() {
 
     useEffect(()=>{
         setallPosts(feed);
-    },[feed,allposts])
+    },[feed])
 
     const refreshFeed=()=>{
         getfeed();
@@ -46,11 +47,16 @@ function Home() {
             setallPosts(feed);
           } else {
             // Filter posts based on search query
-            const newArr = feed.filter((item) =>
+            const newArr = allposts.filter((item) =>
               item.text.toLowerCase().includes(searchQuery.toLowerCase())
             );
             setallPosts(newArr);
           }
+    }
+
+    const handleSidebar=()=>{
+        console.log("sidebar clicked")
+        setShowLeftSidebar(!showLeftSidebar)
     }
 
 
@@ -58,8 +64,14 @@ function Home() {
 
     return (
         <div className='md:flex flex-wrap justify-center items-center h-screen w-full overflow-hidden  '>
-            <div id='first' className= 'hidden  md:block border bg-[#D2E0FB] w-[20%] h-full py-2'>
-
+              {/* //popup here  */}
+              {showPopup && <CreatePostPopup showPopup={showPopup} setShowPopup={setShowPopup} refreshFeed={refreshFeed} />}
+           { <div className={`fixed  ${showLeftSidebar?"left-0":"left-[-300px]"}   top-0 bg-[#8EACCD] h-full w-64  text-white  md:hidden ransform transition-all duration-300 ease-in-out z-10`}>
+                        <LeftSidebar   showLeftSidebar={showLeftSidebar} setShowLeftSidebar={setShowLeftSidebar} userProfileData={userProfileData}/>
+            </div>} 
+            
+            <div id='first' className= {`hidden md:block tranform- translate-x-0 ${showLeftSidebar?"translate-x-14":""}  md:block border bg-[#D2E0FB] w-[20%] h-full py-2`}>
+                
                 <div id='profile ' className='flex flex-col justify-center items-center'>
                      { userProfileData.length>0?  <img    
                                     src={userProfileData[0].avatar
@@ -70,11 +82,11 @@ function Home() {
                                 />
                                 :<img src={userdefault} alt="" className='h-20 w-20 rounded-full' />
                     }
-                    <h1 className='my-2'>{userProfileData.length>0 ? userProfileData[0].username:"username"}</h1>
+                    <Link to={`profile/${userProfileData.length>0 &&  userProfileData[0]._id}`} className='my-2 hover:text-blue-400'>@{userProfileData.length>0 ? userProfileData[0].username:"username"}</Link>
                     <div className='flex gap-5 justify-center items-center'>
-                        <div className='text-center'> <h1>{userProfileData.length>0 ? userProfileData[0].posts.length:"0"}</h1><span>posts</span></div>
-                        <div className='text-center'> <h1>{userProfileData.length>0 ? userProfileData[0].followers.length:"0"}</h1><span>followers</span></div>
-                        <div className='text-center'> <h1>{userProfileData.length>0 ? userProfileData[0].following.length:"0"}</h1><span>following</span></div>
+                        <Link to={`profile/${userProfileData.length>0 &&  userProfileData[0]._id}`}  className='text-center hover:text-blue-400'> <h1>{userProfileData.length>0 ? userProfileData[0].posts.length:"0"}</h1><span>posts</span></Link>
+                        <Link to={`profile/${userProfileData.length>0 &&  userProfileData[0]._id}`} className='text-center hover:text-blue-400'> <h1>{userProfileData.length>0 ? userProfileData[0].followers.length:"0"}</h1><span>followers</span></Link>
+                        <Link to={`profile/${userProfileData.length>0 &&  userProfileData[0]._id}`} className='text-center hover:text-blue-400'> <h1>{userProfileData.length>0 ? userProfileData[0].following.length:"0"}</h1><span>following</span></Link>
                     </div>
                 </div>
                 <hr className=' border border-[#8eaccd] mt-10' />
@@ -94,7 +106,7 @@ function Home() {
             {/* //middle part */}
             <div className='bg-[#8EACCD]  w-[100%] md:w-[60%] h-full overflow-x-scroll scrollbar-hidden'>
                 <header className='h-14 w-full bg-[#D2E0FB] flex  gap-2 items-center border p-2 rounded-b-lg'>
-                    <p className='md:hidden'> &#9776;</p>
+                    <p className='md:hidden' onClick={handleSidebar}> &#9776;</p>
                     <div>
                         <input type="text" name="search" value={searchQuery} onChange={(e)=>{setSearchQuery(e.target.value); handleSearch();}} placeholder='search anything' className='bg-transparent p-1 border rounded-lg w-64 outline-none border-slate-800 h-10' />
                     </div>
@@ -105,7 +117,7 @@ function Home() {
                     {/* //posts will come here  */}
                     {allposts.length>0 && allposts.map((item, index) => (
                         <>
-                        <Post post={item} refreshFeed={refreshFeed} location="home"/>
+                        <Post post={item}  location="home"/>
                         <br />
                         </>
                     ))}
@@ -133,8 +145,7 @@ function Home() {
                 </div>
             </div>
 
-            {/* //popup here  */}
-            {showPopup && <CreatePostPopup showPopup={showPopup} setShowPopup={setShowPopup} refreshFeed={refreshFeed} />}
+          
         </div>
     )
 }

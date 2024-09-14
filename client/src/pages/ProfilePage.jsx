@@ -75,9 +75,9 @@ function ProfilePage() {
   
 
     return (
-        <div className='h-screen w-full p-3 flex justify-center items-center'>
+        <div className='h-screen w-full p-3 flex justify-center items-center '>
             
-            <div className='border border-slate-600 h-full   w-[1000px] overflow-hidden'>
+            <div className='border bg-[#d2e0fb] border-slate-600 h-full   w-[1000px] overflow-hidden'>
             <Link to={"/"} className='outline-none bg-red-300 rounded-b px-3 py-1 '>Home</Link>
                 
                 <div id='profileInfo' className='h-[40%] w-full border-b  flex flex-col justify-center items-center p-3'>
@@ -92,7 +92,7 @@ function ProfilePage() {
                                     className='h-20 w-20 rounded-full object-cover object-center'
                                 />
                                 <h1>{userProfileData[0].username}</h1>
-                                <div id='followersDiv' className='h-16 w-64 mt-2 rounded-lg border flex gap-3 justify-center items-center p-2'>
+                                <div id='followersDiv' className='h-16 w-64 mt-2 rounded-lg border flex gap-3 justify-center items-center p-2 bg-[#8eaccd]'>
                                     <div className='text-center'>
                                         <h1>{userProfileData[0].followers.length}</h1>
                                         <span>Followers</span>
@@ -125,9 +125,9 @@ function ProfilePage() {
                 </div>
 
                 <div className='overflow-y-scroll h-full'>
-                    <div className='w-full flex items-center justify-between px-24 '>
-                        <button onClick={()=>setTab(0)}>posts</button>
-                        <button onClick={() => { getfollowers(); setTab(1); }}>followers</button>
+                    <div className='w-full flex items-center justify-between px-24 py-2 bg-[#8eaccd] '>
+                        <button  onClick={()=>setTab(0)}>posts</button> |
+                        <button onClick={() => { getfollowers(); setTab(1); }}>followers</button>|
                         <button onClick={() => {getfollowing(); setTab(2);  }}>following</button>
                     </div>
 
@@ -135,10 +135,10 @@ function ProfilePage() {
                         tab == 0 ? <div id='posts' className='overflow-y-scroll h-[60%] '>
                             {
                                 userProfileData.length > 0 && (
-                                    <div className='  p-2 flex flex-wrap flex-row gap-3'>
+                                    <div className='  p-2 flex flex-wrap flex-row gap-3 justify-center'>
                                         {
                                             userProfileData[0].posts.map((item, index) => (
-                                                <div className='h-[465px] w-[300px] '>
+                                                <div className='h-[465px] w-[300px]  '>
                                                     <Post key={index} post={item} />
                                                 </div>
                                             ))

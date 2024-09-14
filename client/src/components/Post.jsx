@@ -10,7 +10,7 @@ import { userContext } from '../contexts/UserContextProvider'
 import CreatePostPopup from './CreatePostPopup'
 import { decodeToken } from '../helpers/helper'
 
-function Post({ post, location, refreshFeed }) {
+function Post({ post, location }) {
 
     const [showDelete, setShowDelete] = useState(false)
     const { deletePost, likePost, commentOnPost } = useContext(postContext)
@@ -18,31 +18,32 @@ function Post({ post, location, refreshFeed }) {
     const [isLiked, setIsLiked] = useState(post?.likes.includes(userId))
     const [showCommentPopup, setShowCommentPopup] = useState(false)
     const [comment, setComment] = useState("")
+    const {getfeed}=useContext(postContext)
 
     const handleDeletePost = (id) => {
         deletePost(id)
-        refreshFeed()
+       getfeed()//to update immediately
     }
 
     const handleLike = () => {
         likePost(post?._id, userId, true)
         .then(()=>{
 
-            refreshFeed()
+            getfeed()
         })
 
         setIsLiked(true)
     }
     const handleUnlike = () => {
         likePost(post?._id, userId, false)
-        refreshFeed()//to update the cnt of likes
+        getfeed()//to update the cnt of likes
         setIsLiked(false)
     }
 
     const handleComment = () => {
         commentOnPost(userId, post?._id, comment)
         setShowCommentPopup(false)
-        refreshFeed()
+        getfeed()//to update the cnt of likes
     }
 
     useEffect(() => { 

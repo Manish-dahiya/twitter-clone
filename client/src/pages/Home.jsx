@@ -7,6 +7,7 @@ import { decodeToken } from '../helpers/helper'
 import { postContext } from '../contexts/PostContextProvider'
 import { userContext } from '../contexts/UserContextProvider'
 import LeftSidebar from "../components/LeftSidebar"
+import {GridLoader} from "react-spinners"
 
 function Home() {
     const hashtags=["#TrainAccident","Javascript","#salman khan","#chota bheem","modi","melodi","india"]
@@ -64,6 +65,11 @@ function Home() {
 
     return (
         <div className='md:flex flex-wrap justify-center items-center h-screen w-full overflow-hidden  '>
+{
+            userProfileData.length==0?<> <GridLoader/> </>  
+
+            :<>
+
               {/* //popup here  */}
               {showPopup && <CreatePostPopup showPopup={showPopup} setShowPopup={setShowPopup} refreshFeed={refreshFeed} />}
            { <div className={`fixed  ${showLeftSidebar?"left-0":"left-[-300px]"}   top-0 bg-[#8EACCD] h-full w-64  text-white  md:hidden ransform transition-all duration-300 ease-in-out z-10`}>
@@ -145,7 +151,7 @@ function Home() {
                 </div>
             </div>
 
-          
+            </>}
         </div>
     )
 }

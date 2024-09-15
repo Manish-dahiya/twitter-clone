@@ -25,3 +25,7 @@ Users can follow unfollow each other if they want to and the followers and follo
 routing is done by react-router-dom.
 
 
+
+https://github.com/user-attachments/assets/0e9339e7-424e-49ae-ad12-c398223a60dd
+
+
